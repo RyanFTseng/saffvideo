@@ -43,3 +43,17 @@ pipeline.add(streammux)
 pipeline.add(pgie)
 pipeline.add(fakesink)
 print('Added elements to pipeline')
+
+# Link elements in the pipeline
+source.link(h264parser)
+h264parser.link(decoder)
+
+# Link decoder source pad to streammux sink pad
+decoder_srcpad=decoder.get_static_pad("src")    
+streammux_sinkpad=streammux.get_request_pad("sink_0")
+decoder_srcpad.link(streammux_sinkpad)
+
+# Link the rest of the elements in the pipeline
+streammux.link(pgie)
+pgie.link(fakesink)
+print('Linked elements in pipeline')
